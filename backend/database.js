@@ -1,0 +1,45 @@
+const { Low, JSONFile } = require('lowdb');
+const path = require('path');
+
+const DB_PATH = path.join(__dirname, 'dishes.json');
+const adapter = new JSONFile(DB_PATH);
+const db = new Low(adapter);
+
+const SEED = [
+  { dishId: 'd-001', dishName: 'Margherita Pizza',     imageUrl: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=500&q=80', isPublished: true  },
+  { dishId: 'd-002', dishName: 'Chicken Tikka Masala', imageUrl: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&q=80', isPublished: true  },
+  { dishId: 'd-003', dishName: 'Caesar Salad',         imageUrl: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=500&q=80', isPublished: false },
+  { dishId: 'd-004', dishName: 'Beef Tacos',           imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80', isPublished: true  },
+  { dishId: 'd-005', dishName: 'Sushi Platter',        imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80', isPublished: true  },
+  { dishId: 'd-006', dishName: 'Pasta Carbonara',      imageUrl: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=500&q=80', isPublished: false },
+  { dishId: 'd-007', dishName: 'Tom Yum Soup',         imageUrl: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=500&q=80', isPublished: true  },
+  { dishId: 'd-008', dishName: 'Falafel Wrap',         imageUrl: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500&q=80', isPublished: false },
+  { dishId: 'd-009', dishName: 'Mango Cheesecake',     imageUrl: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&q=80', isPublished: true  },
+  { dishId: 'd-010', dishName: 'Lamb Shawarma',        imageUrl: 'https://images.unsplash.com/photo-1619881589316-9b56a6e73b90?w=500&q=80', isPublished: true  },
+  { dishId: 'd-011', dishName: 'Pho Bo',               imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&q=80', isPublished: true  },
+  { dishId: 'd-012', dishName: 'Eggs Benedict',        imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=500&q=80', isPublished: false },
+];
+
+async function initDB() {
+  await db.read();
+  if (!db.data || !db.data.dishes || db.data.dishes.length === 0) {
+    db.data = { dishes: SEED };
+    await db.write();
+    console.log('[DB] Seeded 12 dishes into dishes.json');
+  } else {
+    console.log(`[DB] Loaded ${db.data.dishes.length} dishes from dishes.json`);
+  }
+}
+
+function getAllDishes()     { return db.data.dishes; }
+function getDishById(id)   { return db.data.dishes.find(d => d.dishId === id) || null; }
+
+async function toggleDish(id) {
+  const dish = db.data.dishes.find(d => d.dishId === id);
+  if (!dish) return null;
+  dish.isPublished = !dish.isPublished;
+  await db.write();
+  return dish;
+}
+
+module.exports = { initDB, getAllDishes, getDishById, toggleDish };
