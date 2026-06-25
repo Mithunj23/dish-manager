@@ -1,8 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-const WS_URL   = process.env.REACT_APP_WS_URL  || 'ws://localhost:4000';
 
+// Auto-upgrades to wss:// when page is served over HTTPS (required on Vercel)
+function getWsUrl() {
+  if (process.env.REACT_APP_WS_URL) return process.env.REACT_APP_WS_URL;
+  const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${proto}://localhost:4000`;
+}
 export function useDishes() {
   const [dishes,     setDishes]     = useState([]);
   const [loading,    setLoading]    = useState(true);
@@ -46,7 +50,7 @@ export function useDishes() {
   // ── WebSocket connection (real-time bonus) ───────────────────────────────
   const connectWS = useCallback(() => {
     if (wsRef.current) wsRef.current.close();
-    const ws = new WebSocket(WS_URL);
+    const ws = new WebSocket(getWsUrl());
     wsRef.current = ws;
 
     ws.onopen = () => {

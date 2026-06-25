@@ -9,7 +9,10 @@ const server = http.createServer(app);
 const wss    = new WebSocketServer({ server });
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'PATCH', 'OPTIONS'],
+}));
 app.use(express.json());
 
 // ── WebSocket broadcast helper ────────────────────────────────────────────────

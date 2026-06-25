@@ -1,8 +1,9 @@
 {
   "name": "dish-manager-backend",
   "version": "1.0.0",
-  "description": "REST API + WebSocket server for Dish Manager",
-  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
