@@ -2,6 +2,7 @@
 
 A production-ready dish management dashboard built with **Node.js + Express** (backend) and **React** (frontend). Dishes can be published/unpublished via a clean UI, with **real-time WebSocket sync** so any backend change instantly reflects in every open browser tab — no refresh needed.
 
+URL:https://dish-manager-livid.vercel.app
 ---
 
 ## Table of Contents
